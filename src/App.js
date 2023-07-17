@@ -1,24 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import { List } from "./Components/List/List";
+import { ListItem } from "./Components/ListItem/ListItem";
 
 function App() {
+  const localData = JSON.parse(localStorage.getItem("todo")) || [];
+  const [todo, setTodo] = useState(localData);
+
+  const handleTodo = (evt) => {
+    if (evt.target.value) {
+      if (evt.keyCode == 13) {
+        const Todo = {
+          id: 1,
+          todo: evt.target.value,
+          isComplated: false,
+        };
+
+        setTodo([Todo, ...todo]);
+        localStorage.setItem("todo", JSON.stringify([Todo, ...todo]));
+        evt.target.value = "";
+      }
+    }
+  };
+
+  console.log(todo);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <input onKeyUp={handleTodo} type="text" placeholder="Todo text" />
+
+      {todo.map((item) => (
+        <List>
+          <ListItem todo={item.todo} />
+        </List>
+      ))}
+    </>
   );
 }
 
